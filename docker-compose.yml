@@ -4,7 +4,7 @@ services:
   dvt-backend:
     build:
       context: .
-      dockerfile: 'dev.Dockerfile'
+      dockerfile: 'Dockerfile'
     image: dvt-backend
     container_name: dvt-backend
     restart: always
