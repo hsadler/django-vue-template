@@ -1,12 +1,12 @@
 version: '3'
 services:
   
-  backend-dev:
+  dvt-backend:
     build:
       context: .
       dockerfile: 'dev.Dockerfile'
-    image: backend-dev
-    container_name: backend-dev
+    image: dvt-backend
+    container_name: dvt-backend
     restart: always
     ports:
       - '8000:8000'
@@ -17,11 +17,11 @@ services:
       - PYTHONDONTWRITEBYTECODE=1
     command: 'python /backend/manage.py runserver 0:8000'
     depends_on:
-      - backend-mysql
+      - dvt-mysql
   
-  backend-mysql:
+  dvt-mysql:
     image: mysql:5.7
-    container_name: backend-mysql
+    container_name: dvt-mysql
     command: --character-set-server=utf8 --collation-server=utf8_general_ci
     ports:
       - '3306:3306'
@@ -29,7 +29,7 @@ services:
     volumes:
       - ./mysql_store:/var/lib/mysql
     environment:
-      - MYSQL_DATABASE=backend
+      - MYSQL_DATABASE=dvt
       - MYSQL_USER=user
       - MYSQL_PASSWORD=password
       - MYSQL_ROOT_PASSWORD=password

@@ -16,5 +16,5 @@ RUN pip install pipenv
 RUN pipenv install --system --dev --deploy --ignore-pipfile
 
 # copy backend
-# COPY ./backend /backend
-# WORKDIR /backend
+COPY ./backend /backend
+WORKDIR /backend

@@ -1,5 +1,5 @@
 
-# dev container management
+# container management
 build:
 	docker-compose -f docker-compose.yml build
 
@@ -10,28 +10,28 @@ down:
 	docker-compose -f docker-compose.yml down
 
 
-# dev container connections
+# container connections
 backend-shell:
-	docker exec -it backend-dev bash
+	docker exec -it dvt-backend bash
 
 mysql-shell:
-	docker exec -it backend-mysql mysql --user=user --password=password backend-mysql
+	docker exec -it dvt-mysql mysql --user=user --password=password dvt
 
 
-# dev container logs
+# container logs
 backend-logs:
-	docker-compose -f docker-compose.yml logs -f backend-dev
+	docker-compose -f docker-compose.yml logs -f dvt-backend
 
 mysql-logs:
-	docker-compose -f docker-compose.yml logs -f backend-mysql
+	docker-compose -f docker-compose.yml logs -f dvt-mysql
 
 
-# dev migrations
+# migrations
 make-migrations:
-	docker exec backend-dev python manage.py makemigrations ${APP}
+	docker exec dvt-backend python manage.py makemigrations ${APP}
 
 migrate:
-	docker exec backend-dev python manage.py migrate
+	docker exec dvt-backend python manage.py migrate
 
 
 # code formatting
