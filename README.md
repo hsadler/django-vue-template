@@ -4,7 +4,6 @@ A template for getting started with a Django+Vue web app.
 ## THIS PROJECT IS A WORK IN PROGRESS
 
 
-
 ### Running and Developing the App Locally
 
 #### Requirements
@@ -36,6 +35,8 @@ In a separate terminal, run the frontend:
 ```sh
 cd webclient && npm run serve
 ```
+
+View the running app at `[http://localhost:8080/](http://localhost:8080/)`
 
 Spin-down when finished:
 ```sh

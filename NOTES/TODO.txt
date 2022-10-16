@@ -1,0 +1,8 @@
+
+TODO:
+- get django admin working
+- add an admin user
+- setup api/status endpoint
+- call api/status from vue client
+- setup api/user endpoint
+- call api/user from vue client
