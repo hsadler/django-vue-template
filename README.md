@@ -36,7 +36,7 @@ In a separate terminal, run the frontend:
 cd webclient && npm run serve
 ```
 
-View the running app at `[http://localhost:8080/](http://localhost:8080/)`
+View the running app at [http://localhost:8080/](http://localhost:8080/)
 
 Spin-down when finished:
 ```sh
@@ -47,12 +47,16 @@ make down
 
 ### Container shell connections (application containers must be running)
 
-Open a shell to the `tjapp-mysql` container:
+Open a shell to the `dvt-mysql` container:
 ```sh
 make mysql-shell
 ```
 
-Open a shell to the `tjapp` application container:
+Open a shell to the `dvt-backend` application container:
 ```sh
-make tjapp-shell
+make backend-shell
 ```
+
+### Django admin
+
+TODO
