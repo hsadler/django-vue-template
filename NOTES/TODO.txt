@@ -1,8 +1,13 @@
 
 TODO:
-- get django admin working
-- add an admin user
+- run required django setups:
+    - manage.py commands
+    - all-auth commands
+    - db migrations
+    - add an admin user
+- verify django admin working
 - setup api/status endpoint
 - call api/status from vue client
 - setup api/user endpoint
 - call api/user from vue client
+- implement user signup/login/logout
