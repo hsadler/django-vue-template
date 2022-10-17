@@ -10,22 +10,37 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+# See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
+
+
+IS_PROD = os.getenv("IS_PROD", "false") == "true"
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = not IS_PROD
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
+
+# CSRF and Sessions
+
+SESSION_COOKIE_SAMESITE = "Strict"
+SESSION_COOKIE_HTTPONLY = True
+ALLOWED_HOSTS = []
+if IS_PROD:
+    ALLOWED_HOSTS += ["<add_prod_host_here>.com"]
+else:
+    ALLOWED_HOSTS += ["*"]
+
+# cookies to be sent over HTTPS only when on prod
+SESSION_COOKIE_SECURE = IS_PROD
+
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-b)(84_83wa7k^%@v1a_3+63w7t0cv3mnsdg!6l3idsea47rqah"
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -37,6 +52,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
+    "rest_framework",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.github",
 ]
 
 MIDDLEWARE = [
@@ -67,7 +88,30 @@ TEMPLATES = [
     },
 ]
 
+SITE_ID = 1
 WSGI_APPLICATION = "backend.wsgi.application"
+
+
+# Authentication
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
+
+# django-allauth settings
+ACCOUNT_EMAIL_REQUIRED = True
+# TODO: change this to "mandatory" when ready
+ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_USERNAME_MIN_LENGTH = 4
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
+ACCOUNT_SESSION_REMEMBER = True
+ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = False
 
 
 # Database
@@ -75,8 +119,12 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.mysql",
+        "HOST": os.getenv("DEFAULT_DB_HOST", "dvt-mysql"),
+        "PORT": "3306",
+        "NAME": os.getenv("DEFAULT_DB_NAME", "dvt"),
+        "USER": os.getenv("DEFAULT_DB_USER", "user"),
+        "PASSWORD": os.getenv("DEFAULT_DB_PASSWORD", "password"),
     }
 }
 
@@ -104,11 +152,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_TZ = True
 
 
@@ -116,6 +161,37 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = "/var/www/backend/static/"
+STATICFILES_DIRS = [BASE_DIR / "static"]
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+
+# DRF settings
+
+if IS_PROD:
+    DEFAULT_RENDERER_CLASSES = ["rest_framework.renderers.JSONRenderer"]
+    DEFAULT_PERMISSION_CLASSES = [
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly"
+    ]
+else:
+    DEFAULT_RENDERER_CLASSES = [
+        "rest_framework.renderers.BrowsableAPIRenderer",
+        "rest_framework.renderers.JSONRenderer",
+    ]
+    DEFAULT_PERMISSION_CLASSES = []
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    "COERCE_DECIMAL_TO_STRING": False,
+    "DEFAULT_RENDERER_CLASSES": DEFAULT_RENDERER_CLASSES,
+    "DEFAULT_PERMISSION_CLASSES": DEFAULT_PERMISSION_CLASSES,
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        # override with our own custom auth class to not use CSRF
+        "backend.auth.CsrfExemptSessionAuthentication"
+    ],
+}
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
