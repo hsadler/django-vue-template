@@ -1,13 +1,13 @@
 
 TODO:
-- run required django setups:
+X run required django setups:
     X manage.py commands
-    - all-auth commands
-    - db migrations
+    X all-auth commands
+    X db migrations
     X add an admin user
 X verify django admin working
 X setup api/status endpoint
+X setup api/user app and endpoint
 - call api/status from vue client
-- setup api/user endpoint
 - call api/user from vue client
 - implement user signup/login/logout

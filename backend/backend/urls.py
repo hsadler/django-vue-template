@@ -27,6 +27,7 @@ def test_status(request):
 
 urlpatterns = [
     path("api/status/", test_status),
+    path("api/user/", include("user.urls")),
 ]
 
 # django admin, and browseable api

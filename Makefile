@@ -27,6 +27,7 @@ mysql-logs:
 
 
 # migrations
+# EXAMPLE: make make-migrations APP=user
 make-migrations:
 	docker exec dvt-backend python manage.py makemigrations ${APP}
 
